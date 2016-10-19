@@ -16,8 +16,8 @@ public class ApiController extends BaseController {
 
 	public static final Logger logger = Logger.getLogger(ApiController.class);
 
-	@RequestMapping(value = "valid")
-	public void valid(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
+	@RequestMapping(value = "entrance")
+	public void entrance(HttpServletRequest request, HttpServletResponse response, PrintWriter out) {
 		Wechat wechat = new Wechat(request);
 		out.print(wechat.execute());
 		out.flush();
