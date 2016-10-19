@@ -1,3 +1,4 @@
 /target
 /.settings
+/.gitignore
 /rio4j_ssh.log
