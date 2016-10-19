@@ -69,7 +69,7 @@
 						<value>/userController/doNotNeedSession_logout</value>
 						<value>/userController/doNotNeedSession_combobox</value>
 						<value>/userController/doNotNeedSession_datagrid</value>
-						<value>/WXApi/api/valid</value>
+						<value>/WXApi/api/entrance</value>
 					</list>
 				</property>
 			</bean>

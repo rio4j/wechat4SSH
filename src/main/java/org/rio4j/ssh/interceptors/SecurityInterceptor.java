@@ -43,7 +43,7 @@ public class SecurityInterceptor implements HandlerInterceptor {
 		String contextPath = request.getContextPath();
 		String url = requestUri.substring(contextPath.length());
 
-		// System.out.println("rml.inteceptors.SecurityInterceptor -->> "+url);
+		System.out.println("rml.inteceptors.SecurityInterceptor -->> "+url);
 
 		if (url.indexOf("/baseController/") > -1 || url.indexOf("demo") > -1 || excludeUrls.contains(url)) {
 			return true;
