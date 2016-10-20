@@ -153,7 +153,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		roleDao.executeHql("delete Trole");
 		userDao.executeHql("delete Tuser");
 		wxUserDao.executeHql("delete TWXUser");
-		//repair();
+		repair();
 	}
 
 	synchronized public void repair() {
