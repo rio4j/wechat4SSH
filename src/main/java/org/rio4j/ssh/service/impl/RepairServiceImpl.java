@@ -1,4 +1,5 @@
 package org.rio4j.ssh.service.impl;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.rio4j.ssh.model.po.Trole;
 import org.rio4j.ssh.model.po.Troletauth;
 import org.rio4j.ssh.model.po.Tuser;
 import org.rio4j.ssh.model.po.Tusertrole;
+import org.rio4j.ssh.model.po.TWXUser;
 import org.rio4j.ssh.service.RepairServiceI;
 import org.rio4j.ssh.util.Encrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +35,23 @@ public class RepairServiceImpl implements RepairServiceI {
 	private BaseDaoI<Tequip> equipDao;
 	private BaseDaoI<Tdoc> docDao;
 	private BaseDaoI<Tlog> logDao;
+	private BaseDaoI<TWXUser> wxUserDao;
 
+	/**
+	 * WX
+	 */
+	public BaseDaoI<TWXUser> getWxUserDao() {
+		return wxUserDao;
+	}
+
+	@Autowired
+	public void setWxUserDao(BaseDaoI<TWXUser> wxUserDao) {
+		this.wxUserDao = wxUserDao;
+	}
+
+	/**
+	 * WX entity end
+	 */
 	public BaseDaoI<Troletauth> getRoleauthDao() {
 		return roleauthDao;
 	}
@@ -96,7 +114,7 @@ public class RepairServiceImpl implements RepairServiceI {
 	public void setUserDao(BaseDaoI<Tuser> userDao) {
 		this.userDao = userDao;
 	}
-	
+
 	public BaseDaoI<Tequip> getEquipDao() {
 		return equipDao;
 	}
@@ -105,7 +123,7 @@ public class RepairServiceImpl implements RepairServiceI {
 	public void setEquipDao(BaseDaoI<Tequip> equipDao) {
 		this.equipDao = equipDao;
 	}
-	
+
 	public BaseDaoI<Tdoc> getDocDao() {
 		return docDao;
 	}
@@ -114,7 +132,7 @@ public class RepairServiceImpl implements RepairServiceI {
 	public void setDocDao(BaseDaoI<Tdoc> docDao) {
 		this.docDao = docDao;
 	}
-	
+
 	public BaseDaoI<Tlog> getLogDao() {
 		return logDao;
 	}
@@ -123,7 +141,7 @@ public class RepairServiceImpl implements RepairServiceI {
 	public void setLogDao(BaseDaoI<Tlog> logDao) {
 		this.logDao = logDao;
 	}
-	
+
 	synchronized public void deleteAndRepair() {
 		onlineDao.executeHql("delete Tonline");
 		menuDao.executeHql("update Tmenu t set t.tmenu = null");
@@ -134,19 +152,21 @@ public class RepairServiceImpl implements RepairServiceI {
 		authDao.executeHql("delete Tauth");
 		roleDao.executeHql("delete Trole");
 		userDao.executeHql("delete Tuser");
-		repair();
+		wxUserDao.executeHql("delete TWXUser");
+		//repair();
 	}
-	
+
 	synchronized public void repair() {
-		repairMenu(); 
-		repairAuth();  
-		repairRole();  
+		repairMenu();
+		repairAuth();
+		repairRole();
 		repairUser();
-		repairRoleAuth(); 
+		repairRoleAuth();
 		repairUserRole();
 		repairEquipment();
 		repairDocument();
 		repairLog();
+		// repairWXUser();
 	}
 
 	private void repairMenu() {
@@ -177,7 +197,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		menu1_1.setCurl("/equipController/equip");
 		menu1_1.setTmenu(menu1);
 		menuDao.saveOrUpdate(menu1_1);
-		
+
 		Tmenu menu1_2 = new Tmenu();
 		menu1_2.setCid("menu1_2");
 		menu1_2.setCname("Document");
@@ -245,7 +265,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		menuDao.saveOrUpdate(menu3_2);
 
 	}
-	
+
 	private void repairAuth() {
 		authDao.executeHql("update Tauth a set a.tauth = null");
 
@@ -275,7 +295,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_1.setCseq(BigDecimal.valueOf(1));
 		auth1_1.setCdesc("Equipment management");
 		authDao.saveOrUpdate(auth1_1);
-		
+
 		Tauth auth1_2 = new Tauth();
 		auth1_2.setCid("auth1_2");
 		auth1_2.setTauth(auth1);
@@ -284,7 +304,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_2.setCseq(BigDecimal.valueOf(2));
 		auth1_2.setCdesc("");
 		authDao.saveOrUpdate(auth1_2);
-		
+
 		Tauth auth1_3 = new Tauth();
 		auth1_3.setCid("auth1_3");
 		auth1_3.setTauth(auth1);
@@ -293,7 +313,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_3.setCseq(BigDecimal.valueOf(3));
 		auth1_3.setCdesc("");
 		authDao.saveOrUpdate(auth1_3);
-		
+
 		Tauth auth1_4 = new Tauth();
 		auth1_4.setCid("auth1_4");
 		auth1_4.setTauth(auth1);
@@ -302,7 +322,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_4.setCseq(BigDecimal.valueOf(4));
 		auth1_4.setCdesc("");
 		authDao.saveOrUpdate(auth1_4);
-		
+
 		Tauth auth1_5 = new Tauth();
 		auth1_5.setCid("auth1_5");
 		auth1_5.setTauth(auth1);
@@ -311,7 +331,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_5.setCseq(BigDecimal.valueOf(5));
 		auth1_5.setCdesc("");
 		authDao.saveOrUpdate(auth1_5);
-		
+
 		Tauth auth1_6 = new Tauth();
 		auth1_6.setCid("auth1_6");
 		auth1_6.setTauth(auth1);
@@ -320,7 +340,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_6.setCseq(BigDecimal.valueOf(6));
 		auth1_6.setCdesc("");
 		authDao.saveOrUpdate(auth1_6);
-		
+
 		Tauth auth1_7 = new Tauth();
 		auth1_7.setCid("auth1_7");
 		auth1_7.setTauth(auth1);
@@ -329,7 +349,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_7.setCseq(BigDecimal.valueOf(7));
 		auth1_7.setCdesc("");
 		authDao.saveOrUpdate(auth1_7);
-		
+
 		Tauth auth1_8 = new Tauth();
 		auth1_8.setCid("auth1_8");
 		auth1_8.setTauth(auth1);
@@ -338,7 +358,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_8.setCseq(BigDecimal.valueOf(8));
 		auth1_8.setCdesc("");
 		authDao.saveOrUpdate(auth1_8);
-		
+
 		Tauth auth1_9 = new Tauth();
 		auth1_9.setCid("auth1_9");
 		auth1_9.setTauth(auth1);
@@ -347,7 +367,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_9.setCseq(BigDecimal.valueOf(9));
 		auth1_9.setCdesc("Document management");
 		authDao.saveOrUpdate(auth1_9);
-		
+
 		Tauth auth1_10 = new Tauth();
 		auth1_10.setCid("auth1_10");
 		auth1_10.setTauth(auth1);
@@ -365,7 +385,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_11.setCseq(BigDecimal.valueOf(11));
 		auth1_11.setCdesc("");
 		authDao.saveOrUpdate(auth1_11);
-		
+
 		Tauth auth1_12 = new Tauth();
 		auth1_12.setCid("auth1_12");
 		auth1_12.setTauth(auth1);
@@ -374,7 +394,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_12.setCseq(BigDecimal.valueOf(12));
 		auth1_12.setCdesc("");
 		authDao.saveOrUpdate(auth1_12);
-		
+
 		Tauth auth1_13 = new Tauth();
 		auth1_13.setCid("auth1_13");
 		auth1_13.setTauth(auth1);
@@ -383,7 +403,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_13.setCseq(BigDecimal.valueOf(13));
 		auth1_13.setCdesc("");
 		authDao.saveOrUpdate(auth1_13);
-		
+
 		Tauth auth1_14 = new Tauth();
 		auth1_14.setCid("auth1_14");
 		auth1_14.setTauth(auth1);
@@ -392,7 +412,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_14.setCseq(BigDecimal.valueOf(14));
 		auth1_14.setCdesc("");
 		authDao.saveOrUpdate(auth1_14);
-		
+
 		Tauth auth1_15 = new Tauth();
 		auth1_15.setCid("auth1_15");
 		auth1_15.setTauth(auth1);
@@ -401,7 +421,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_15.setCseq(BigDecimal.valueOf(15));
 		auth1_15.setCdesc("");
 		authDao.saveOrUpdate(auth1_15);
-		
+
 		Tauth auth1_16 = new Tauth();
 		auth1_16.setCid("auth1_16");
 		auth1_16.setTauth(auth1);
@@ -410,7 +430,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_16.setCseq(BigDecimal.valueOf(16));
 		auth1_16.setCdesc("");
 		authDao.saveOrUpdate(auth1_16);
-		
+
 		Tauth auth1_17 = new Tauth();
 		auth1_17.setCid("auth1_17");
 		auth1_17.setTauth(auth1);
@@ -418,7 +438,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth1_17.setCurl("/docController/upload");
 		auth1_17.setCseq(BigDecimal.valueOf(17));
 		auth1_17.setCdesc("");
-		authDao.saveOrUpdate(auth1_17);	
+		authDao.saveOrUpdate(auth1_17);
 		//
 		Tauth auth2 = new Tauth();
 		auth2.setCid("auth2");
@@ -509,7 +529,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth2_9.setCseq(BigDecimal.valueOf(9));
 		auth2_9.setCdesc("Batch edit role");
 		authDao.saveOrUpdate(auth2_9);
-		
+
 		Tauth auth2_10 = new Tauth();
 		auth2_10.setCid("auth2_10");
 		auth2_10.setTauth(auth2);
@@ -518,7 +538,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth2_10.setCseq(BigDecimal.valueOf(10));
 		auth2_10.setCdesc("");
 		authDao.saveOrUpdate(auth2_10);
-		
+
 		Tauth auth2_11 = new Tauth(); ///////////
 		auth2_11.setCid("auth2_11");
 		auth2_11.setTauth(auth2);
@@ -527,7 +547,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		auth2_11.setCseq(BigDecimal.valueOf(11));
 		auth2_11.setCdesc("");
 		authDao.saveOrUpdate(auth2_11);
-		
+
 		Tauth auth2_12 = new Tauth();
 		auth2_12.setCid("auth2_12");
 		auth2_12.setTauth(auth2);
@@ -695,7 +715,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		guest.setCname("Guest");
 		guest.setCdesc("Minimum authority");
 		roleDao.saveOrUpdate(guest);
-		
+
 		Trole user = new Trole();
 		user.setCid("2");
 		user.setCname("User");
@@ -734,9 +754,9 @@ public class RepairServiceImpl implements RepairServiceI {
 				roleauthDao.save(roleauth);
 			}
 		}
-	
+
 	}
-	
+
 	private void repairUserRole() {
 		userroleDao.executeHql("delete Tusertrole t where t.tuser.cid in ( '0' )");
 
@@ -746,13 +766,12 @@ public class RepairServiceImpl implements RepairServiceI {
 		userrole.setTuser(userDao.get(Tuser.class, "0"));
 		userroleDao.save(userrole);
 	}
-	
-	
+
 	private void repairEquipment() {
-		
+
 		equipDao.executeHql("delete Tequip");
 		Tequip equip = new Tequip();
-		
+
 		equip.setCid(UUID.randomUUID().toString());
 		equip.setCmodel("DPO70404C");
 		equip.setCname("Oscilloscope");
@@ -760,7 +779,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip.setCdesc("4 GHz Bandwidth, 25 GS/s Sample Rate, 4 Channels");
 		equip.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip);
-		
+
 		Tequip equip1 = new Tequip();
 		equip1.setCid(UUID.randomUUID().toString());
 		equip1.setCmodel("DPO70604C");
@@ -769,7 +788,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip1.setCdesc("6 GHz Bandwidth, 25 GS/s Sample Rate, 4 Channels");
 		equip1.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip1);
-		
+
 		Tequip equip2 = new Tequip();
 		equip2.setCid(UUID.randomUUID().toString());
 		equip2.setCmodel("DPO71254C");
@@ -778,7 +797,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip2.setCdesc("12.5 GHz Bandwidth, 50 - 100 GS/s Sample Rate, 4 Channels");
 		equip2.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip2);
-	
+
 		Tequip equip3 = new Tequip();
 		equip3.setCid(UUID.randomUUID().toString());
 		equip3.setCmodel("MSO72004C");
@@ -787,7 +806,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip3.setCdesc("20 GHz Bandwidth, 50 - 100 GS/s Sample Rate, 4 Channels");
 		equip3.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip3);
-		
+
 		Tequip equip4 = new Tequip();
 		equip4.setCid(UUID.randomUUID().toString());
 		equip4.setCmodel("DPO73304DX");
@@ -796,7 +815,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip4.setCdesc("33 GHz Bandwidth, 50 - 100 GS/s Sample Rate, 4 Channels");
 		equip4.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip4);
-		
+
 		Tequip equip5 = new Tequip();
 		equip5.setCid(UUID.randomUUID().toString());
 		equip5.setCmodel("DSOX4022A");
@@ -805,7 +824,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip5.setCdesc("200 MHz Bandwidth, 5 GS/s Sample Rate, 2 Channels");
 		equip5.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip5);
-		
+
 		Tequip equip6 = new Tequip();
 		equip6.setCid(UUID.randomUUID().toString());
 		equip6.setCmodel("DSOX4052A");
@@ -814,7 +833,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip6.setCdesc("500 MHz Bandwidth, 5 GS/s Sample Rate, 4 Channels");
 		equip6.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip6);
-		
+
 		Tequip equip7 = new Tequip();
 		equip7.setCid(UUID.randomUUID().toString());
 		equip7.setCmodel("MSOX4154A");
@@ -823,7 +842,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip7.setCdesc("1.5 GHz Bandwidth, 5 GS/s Sample Rate, 4 Channels");
 		equip7.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip7);
-		
+
 		Tequip equip8 = new Tequip();
 		equip8.setCid(UUID.randomUUID().toString());
 		equip8.setCmodel("AFG2000");
@@ -832,7 +851,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip8.setCdesc("20 MHz Bandwidth, 250 MS/s Sample Rate, 14 bit Resolution");
 		equip8.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip8);
-		
+
 		Tequip equip9 = new Tequip();
 		equip9.setCid(UUID.randomUUID().toString());
 		equip9.setCmodel("AFG3101C");
@@ -841,7 +860,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip9.setCdesc("100 MHz Bandwidth, 1 GS/s Sample Rate, 14 bit Resolution");
 		equip9.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip9);
-		
+
 		Tequip equip10 = new Tequip();
 		equip10.setCid(UUID.randomUUID().toString());
 		equip10.setCmodel("AFG3252C");
@@ -859,7 +878,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip11.setCdesc("34 Channels, 1.0 GHz / 500 MHz Timing Speed");
 		equip11.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip11);
-		
+
 		Tequip equip12 = new Tequip();
 		equip12.setCid(UUID.randomUUID().toString());
 		equip12.setCmodel("16802A");
@@ -868,7 +887,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip12.setCdesc("68 Channels, 1.0 GHz / 500 MHz Timing Speed");
 		equip12.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip12);
-		
+
 		Tequip equip13 = new Tequip();
 		equip13.setCid(UUID.randomUUID().toString());
 		equip13.setCmodel("16803A");
@@ -877,7 +896,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip13.setCdesc("102 Channels, 1.0 GHz / 500 MHz Timing Speed");
 		equip13.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip13);
-		
+
 		Tequip equip14 = new Tequip();
 		equip14.setCid(UUID.randomUUID().toString());
 		equip14.setCmodel("DMM4020");
@@ -886,7 +905,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip14.setCdesc("5.5 Digit Resolution, ±0.015% Reading + 0.004% Range Accuracy");
 		equip14.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip14);
-		
+
 		Tequip equip15 = new Tequip();
 		equip15.setCid(UUID.randomUUID().toString());
 		equip15.setCmodel("DMM4040");
@@ -895,7 +914,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip15.setCdesc("6.5 Digit Resolution, 0.0035% Reading + 0.0005% Range Accuracy");
 		equip15.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip15);
-		
+
 		Tequip equip16 = new Tequip();
 		equip16.setCid(UUID.randomUUID().toString());
 		equip16.setCmodel("DMM4050");
@@ -903,8 +922,8 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip16.setCproducer("Tektronix");
 		equip16.setCdesc("6.5 Digit Resolution, 0.0024% Reading + 0.0005% Range Accuracy");
 		equip16.setCno(Integer.valueOf(10));
-		equipDao.saveOrUpdate(equip16);		
-		
+		equipDao.saveOrUpdate(equip16);
+
 		Tequip equip17 = new Tequip();
 		equip17.setCid(UUID.randomUUID().toString());
 		equip17.setCmodel("N6763A");
@@ -913,7 +932,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip17.setCdesc("20V, 50A, 300W");
 		equip17.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip17);
-		
+
 		Tequip equip18 = new Tequip();
 		equip18.setCid(UUID.randomUUID().toString());
 		equip18.setCmodel("N6764A");
@@ -922,7 +941,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip18.setCdesc("60V, 20A, 300W");
 		equip18.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip18);
-		
+
 		Tequip equip19 = new Tequip();
 		equip19.setCid(UUID.randomUUID().toString());
 		equip19.setCmodel("N6766A");
@@ -931,7 +950,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip19.setCdesc("60V, 17A, 500W");
 		equip19.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip19);
-		
+
 		Tequip equip20 = new Tequip();
 		equip20.setCid(UUID.randomUUID().toString());
 		equip20.setCmodel("PWS2721");
@@ -940,7 +959,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip20.setCdesc("1.5A, 72V");
 		equip20.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip20);
-		
+
 		Tequip equip21 = new Tequip();
 		equip21.setCid(UUID.randomUUID().toString());
 		equip21.setCmodel("PWS2323");
@@ -949,7 +968,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip21.setCdesc("3A, 32V");
 		equip21.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip21);
-		
+
 		Tequip equip22 = new Tequip();
 		equip22.setCid(UUID.randomUUID().toString());
 		equip22.setCmodel("PWS2185");
@@ -959,11 +978,11 @@ public class RepairServiceImpl implements RepairServiceI {
 		equip22.setCno(Integer.valueOf(10));
 		equipDao.saveOrUpdate(equip22);
 	}
-	
+
 	private void repairDocument() {
-		
+
 		docDao.executeHql("delete Tdoc");
-	
+
 		Tdoc doc = new Tdoc();
 		doc.setCid(UUID.randomUUID().toString());
 		doc.setCmodel("TMS320C6678");
@@ -972,7 +991,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc.setCno(Integer.valueOf(10));
 		doc.setCmanual("<a href='../upload/tms320c6678.pdf'>tms320c6678.pdf</a>");
 		docDao.saveOrUpdate(doc);
-		
+
 		Tdoc doc1 = new Tdoc();
 		doc1.setCid(UUID.randomUUID().toString());
 		doc1.setCmodel("TMS320C6474");
@@ -981,7 +1000,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc1.setCno(Integer.valueOf(10));
 		doc1.setCmanual("<a href='../upload/tms320c6474.pdf'>tms320c6474.pdf</a>");
 		docDao.saveOrUpdate(doc1);
-	
+
 		Tdoc doc2 = new Tdoc();
 		doc2.setCid(UUID.randomUUID().toString());
 		doc2.setCmodel("TMS320VC5510A");
@@ -990,7 +1009,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc2.setCno(Integer.valueOf(10));
 		doc2.setCmanual("<a href='../upload/tms320vc5510a.pdf'>tms320vc5510a.pdf</a>");
 		docDao.saveOrUpdate(doc2);
-		
+
 		Tdoc doc3 = new Tdoc();
 		doc3.setCid(UUID.randomUUID().toString());
 		doc3.setCmodel("TMS320DM648");
@@ -999,7 +1018,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc3.setCno(Integer.valueOf(10));
 		doc3.setCmanual("<a href='../upload/tms320dm648.pdf'>tms320dm648.pdf</a>");
 		docDao.saveOrUpdate(doc3);
-		
+
 		Tdoc doc4 = new Tdoc();
 		doc4.setCid(UUID.randomUUID().toString());
 		doc4.setCmodel("LM7372");
@@ -1008,7 +1027,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc4.setCno(Integer.valueOf(10));
 		doc4.setCmanual("<a href='../upload/lm7372.pdf'>lm7372.pdf</a>");
 		docDao.saveOrUpdate(doc4);
-		
+
 		Tdoc doc5 = new Tdoc();
 		doc5.setCid(UUID.randomUUID().toString());
 		doc5.setCmodel("TLC1079");
@@ -1017,7 +1036,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc5.setCno(Integer.valueOf(10));
 		doc5.setCmanual("<a href='../upload/tlc1079.pdf'>tlc1079.pdf</a>");
 		docDao.saveOrUpdate(doc5);
-		
+
 		Tdoc doc6 = new Tdoc();
 		doc6.setCid(UUID.randomUUID().toString());
 		doc6.setCmodel("STA540");
@@ -1026,7 +1045,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc6.setCno(Integer.valueOf(10));
 		doc6.setCmanual("<a href='../upload/STA540.pdf'>STA540.pdf</a>");
 		docDao.saveOrUpdate(doc6);
-		
+
 		Tdoc doc7 = new Tdoc();
 		doc7.setCid(UUID.randomUUID().toString());
 		doc7.setCmodel("TDA7491P");
@@ -1035,7 +1054,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc7.setCno(Integer.valueOf(10));
 		doc7.setCmanual("<a href='../upload/TDA7491P.pdf'>TDA7491P.pdf</a>");
 		docDao.saveOrUpdate(doc7);
-		
+
 		Tdoc doc8 = new Tdoc();
 		doc8.setCid(UUID.randomUUID().toString());
 		doc8.setCmodel("SPC560B40L332");
@@ -1044,7 +1063,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc8.setCno(Integer.valueOf(10));
 		doc8.setCmanual("<a href='../upload/SPC560B40L3.pdf'>SPC560B40L3.pdf</a>");
 		docDao.saveOrUpdate(doc8);
-		
+
 		Tdoc doc9 = new Tdoc();
 		doc9.setCid(UUID.randomUUID().toString());
 		doc9.setCmodel("SPC564B74L8");
@@ -1053,7 +1072,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc9.setCno(Integer.valueOf(10));
 		doc9.setCmanual("<a href='../upload/SPC564B74L8.pdf'>SPC564B74L8.pdf</a>");
 		docDao.saveOrUpdate(doc9);
-		
+
 		Tdoc doc10 = new Tdoc();
 		doc10.setCid(UUID.randomUUID().toString());
 		doc10.setCmodel("ST10F269");
@@ -1062,7 +1081,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc10.setCno(Integer.valueOf(10));
 		doc10.setCmanual("<a href='../upload/ST10F269.pdf'>ST10F269.pdf</a>");
 		docDao.saveOrUpdate(doc10);
-		
+
 		Tdoc doc11 = new Tdoc();
 		doc11.setCid(UUID.randomUUID().toString());
 		doc11.setCmodel("PIC10F200");
@@ -1071,7 +1090,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc11.setCno(Integer.valueOf(10));
 		doc11.setCmanual("<a href='../upload/PIC10F200.pdf'>PIC10F200.pdf</a>");
 		docDao.saveOrUpdate(doc11);
-		
+
 		Tdoc doc12 = new Tdoc();
 		doc12.setCid(UUID.randomUUID().toString());
 		doc12.setCmodel("MCP3901");
@@ -1080,7 +1099,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc12.setCno(Integer.valueOf(10));
 		doc12.setCmanual("<a href='../upload/MCP3901.pdf'>MCP3901.pdf</a>");
 		docDao.saveOrUpdate(doc12);
-		
+
 		Tdoc doc13 = new Tdoc();
 		doc13.setCid(UUID.randomUUID().toString());
 		doc13.setCmodel("MCP3423");
@@ -1089,7 +1108,7 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc13.setCno(Integer.valueOf(10));
 		doc13.setCmanual("<a href='../upload/MCP3423.pdf'>MCP3423.pdf</a>");
 		docDao.saveOrUpdate(doc13);
-		
+
 		Tdoc doc14 = new Tdoc();
 		doc14.setCid(UUID.randomUUID().toString());
 		doc14.setCmodel("SST39VF401C");
@@ -1097,8 +1116,8 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc14.setCproducer("Microchip");
 		doc14.setCno(Integer.valueOf(10));
 		doc14.setCmanual("<a href='../upload/SST39VF401C.pdf'>SST39VF401C.pdf</a>");
-		docDao.saveOrUpdate(doc14);	
-		
+		docDao.saveOrUpdate(doc14);
+
 		Tdoc doc15 = new Tdoc();
 		doc15.setCid(UUID.randomUUID().toString());
 		doc15.setCmodel("MCP6N11");
@@ -1108,10 +1127,10 @@ public class RepairServiceImpl implements RepairServiceI {
 		doc15.setCmanual("<a href='../upload/MCP6N11.pdf'>MCP6N11.pdf</a>");
 		docDao.saveOrUpdate(doc15);
 	}
-	
+
 	private void repairLog() {
 		logDao.executeHql("delete Tlog");
-		
+
 		Tlog log = new Tlog();
 		log.setCid(UUID.randomUUID().toString());
 		log.setCname("admin");
@@ -1119,6 +1138,6 @@ public class RepairServiceImpl implements RepairServiceI {
 		log.setCdatetime(new Date());
 		log.setCmsg("create");
 		logDao.saveOrUpdate(log);
-	
+
 	}
 }

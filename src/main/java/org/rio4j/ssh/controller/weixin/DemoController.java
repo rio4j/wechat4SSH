@@ -56,4 +56,17 @@ public class DemoController extends BaseController {
 		System.err.println(11);
 		return "/WXApi/demo/cropper";
 	}
+	
+	@RequestMapping(value = "refreshUsers")
+	@ResponseBody
+	public String refreshUsers(HttpServletRequest request) {
+		UserManager manager =new UserManager();
+		List<String> list = manager.allSubscriber();
+		List<User> users = new ArrayList<User>();
+		for (String str : list) {
+			users.add(manager.getUserInfo(str, LanguageType.zh_CN));
+		}
+		
+		return "";
+	}
 }
